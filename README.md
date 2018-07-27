@@ -1,4 +1,5 @@
 # outside-pcfbosh-prometheus-bosh
+Sample Enviroment. This doc is for deloying prometheus-boshrelease to monitor PCF.
 ![](https://github.com/tkaburagi/outside-pcfbosh-prometheus-bosh/blob/master/diagram.png)
 
 ```console
