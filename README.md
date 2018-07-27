@@ -26,6 +26,7 @@ uaac target
 uaac token client
 uaac client add bosh_exporter
 ```
+https://github.com/bosh-prometheus/node-exporter-boshrelease
 
 ```console
 bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
