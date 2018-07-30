@@ -71,7 +71,8 @@ $ uaac target https://BOSH_DIRECTOR:8443 --skip-ssl-validation
 $ uaac token owner get login -s <<UAA_LOGIN_CLIENT_CREDENTIAL>> 
 User name:  admin
 Password:  <<UAA_ADMIN_USER_CREDENTIAL>>
-  uaac client add prometheus-bosh \
+
+$ uaac client add prometheus-bosh \
   --name prometheus-bosh \
   --secret prometheus-client-secret \
   --authorized_grant_types client_credentials,refresh_token \
