@@ -21,12 +21,27 @@ bosh2 create-env bosh-deployment/bosh.yml \
     -v subnetwork=<<GCP_VPC_SUBNET>>
 ```
 
+Logging into BOSH ENV. `cred.yml` should be stored the directory which is set as `--vars-store`.
 ```console
-bosh2 alias-env 
+bosh2 alias-env gcpbosh -e 10.0.0.6 --ca-cert <(bosh2 int /home/tkaburagi/creds.yml --path /director_ssl/ca)
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET
+export BOSH_CLIENT_SECRET=`bosh2 int /home/tkaburagi/creds.yml --path /admin_password`
 bosh2 -e bosh env
+Using environment '10.0.0.6' as client 'admin'
+
+Name      d-bosh
+UUID      c672a233-2ab8-4710-ba7d-1845e223419b
+Version   266.7.0 (00000000)
+CPI       google_cpi
+Features  compiled_package_cache: disabled
+          config_server: disabled
+          dns: disabled
+          snapshots: disabled
+User      admin
+
+Succeeded
 ```
+
 
 ## Updating Cloud Config
 ```console
