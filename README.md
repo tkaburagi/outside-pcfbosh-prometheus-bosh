@@ -2,8 +2,23 @@
 Sample Enviroment. This doc is for deloying prometheus-boshrelease to monitor PCF.
 ![](https://github.com/tkaburagi/outside-pcfbosh-prometheus-bosh/blob/master/diagram.png)
 
+## Creating BOSH ENV on GCP
+Following [instruction](https://bosh.io/docs/init-google/).
 ```console
-bosh create-env
+bosh2 create-env bosh-deployment/bosh.yml \
+    --state=state.json \
+    --vars-store=creds.yml \
+    -o bosh-deployment/gcp/cpi.yml \
+    -v director_name=d-bosh \
+    -v internal_cidr=10.0.0.0/24 \
+    -v internal_gw=10.0.0.1 \
+    -v internal_ip=10.0.0.6 \
+    --var-file gcp_credentials_json=<<KEY_JSON>> \
+    -v project_id=<<GCP_PROJECT_ID>> \
+    -v zone=<<ZONE>> \
+    -v tags=[d-bosh] \
+    -v network=<<GCP_VPC>> \
+    -v subnetwork=<<GCP_VPC_SUBNET>>
 ```
 
 ```console
@@ -13,15 +28,17 @@ export BOSH_CLIENT_SECRET
 bosh2 -e bosh env
 ```
 
+## Updating Cloud Config
 ```console
 bosh2 -e bosh-1 update-cloud-config
 bosh2 -e bosh-1 upload-stemcel
 ```
 
+## Generating UAA Clients for Exporters
 ```console
 uaac target
 uaac token client
-uaac client add firehost_exporter
+uaac client add firehose_exporter
 uaac client add cf_exporter
 uaac target
 uaac token client
@@ -29,6 +46,7 @@ uaac client add bosh_exporter
 ```
 https://github.com/bosh-prometheus/node-exporter-boshrelease
 
+## Deploying Prometheus
 ```console
 bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
   --vars-store tmp/deployment-vars.yml \
