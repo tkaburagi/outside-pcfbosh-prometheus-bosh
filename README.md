@@ -50,15 +50,17 @@ $ bosh2 -e gcpbosh upload-stemcel
 ```
 
 ## Generating UAA Clients for Exporters
-According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual.
+According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual. <<UAA_CLIENT_SECRET>> is on `PAS tile -> Credentials -> UAA -> Admin Client Credentials.`. <<UAA-LOGIN-CLIENT-CREDENTIAL>> is on `BOSH tile -> Uaa Admin User Credentials`. <<UAA-ADMIN-USER-CREDENTIAL>> is on `BOSH tile -> Uaa Login Client Credentials`.
 ```bash
 $ uaac target https://uaa.<<SYSTEM_DOMAIN>> --skip-ssl-validation
-$ uaac token client get admin -s <<UAA_CLIENT_SECRET>> #PAS tile -> Credentials -> UAA -> Admin Client Credentials
+$ uaac token client get admin -s <<UAA_CLIENT_SECRET>>
+
 $ uaac client add firehose_exporter \
   --name firehose_exporter \
   --secret prometheus-client-secret \
   --authorized_grant_types client_credentials,refresh_token \
   --authorities doppler.firehose
+
 $ uaac client add cf_exporter \
   --name cf_exporter  \
   --secret prometheus-client-secret \
@@ -66,9 +68,9 @@ $ uaac client add cf_exporter \
   --authorities cloud_controller.admin
 
 $ uaac target https://BOSH_DIRECTOR:8443 --skip-ssl-validation
-$ uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> #BOSH tile -> Uaa Admin User Credentials
+$ uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> 
 User name:  admin
-Password:  <<UAA-ADMIN-USER-CREDENTIAL>> //BOSH tile -> Uaa Login Client Credentials
+Password:  <<UAA-ADMIN-USER-CREDENTIAL>>
   uaac client add prometheus-bosh \
   --name prometheus-bosh \
   --secret prometheus-client-secret \
@@ -81,7 +83,7 @@ Password:  <<UAA-ADMIN-USER-CREDENTIAL>> //BOSH tile -> Uaa Login Client Credent
 See below.
 https://github.com/bosh-prometheus/node-exporter-boshrelease
 
-Preparations have been done! It's time to install Prometheus!
+Preparations have been done! It's time to install Prometheus! <<Uaa Admin User Credentials>> is on `BOSH tile -> Uaa Admin User Credentials`. 
 ## Deploying Prometheus
 ```bash
 $ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
@@ -93,8 +95,8 @@ $ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
   -o pcf-local-exporter.yml \
   -v bosh_url= <<PCF_BOSH_URL>> \
   -v bosh_username= admin \
-  -v bosh_password=  <<Uaa Admin User Credentials>> \
-  --var-file bosh_ca_cert= <<UAA-LOGIN-CLIENT-CREDENTIAL>> \ #BOSH tile -> Uaa Admin User Credentials
+  -v bosh_password=  <<UAA_ADMIN_USER_CREDENTIAL>> \ 
+  --var-file bosh_ca_cert= <<PATH_TO_OPSMAN_CERT>> \ 
   -v metrics_environment=p-bosh \
   -v metron_deployment_name=cf \
   -v system_domain= <<SYSTEM_DOMAIN>>\
