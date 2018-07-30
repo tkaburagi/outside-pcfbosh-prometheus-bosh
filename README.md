@@ -107,7 +107,5 @@ $ bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
 
 ## Login to Grafana
 URL: `http://NGINX_PUBLIC_IP:3000`
-
 USER: `admin`
-
 PASSWORD: Retrive from `tmp/deployment-vars.yml`
