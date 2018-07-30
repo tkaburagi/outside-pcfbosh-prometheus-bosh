@@ -86,6 +86,7 @@ See below.
 https://github.com/bosh-prometheus/node-exporter-boshrelease
 
 Preparations have been done! It's time to install Prometheus! `<UAA_ADMIN_USER_CREDENTIAL>>` is on `BOSH tile -> Uaa Admin User Credentials`. 
+Ops file named `[pcf-colocate-firehose_exporter.yml](https://github.com/pivotal-cf/pcf-prometheus-pipeline/blob/master/pcf-colocate-firehose_exporter.yml)` and `[pcf-local-exporter.yml](https://github.com/pivotal-cf/pcf-prometheus-pipeline/blob/master/pcf-local-cf_exporter.yml)` should be added for deploying Prometheus outside of PCF BOSH.
 ## Deploying Prometheus
 ```bash
 $ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
