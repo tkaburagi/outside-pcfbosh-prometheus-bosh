@@ -53,7 +53,7 @@ bosh2 -e bosh-1 upload-stemcel
 According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual.
 ```console
 uaac target https://uaa.<<SYSTEM_DOMAIN>> --skip-ssl-validation
-uaac token client get admin -s <<UAA_CLIENT_SECRET>> #PAS tile -> Credentials -> UAA -> Admin Client Credentials
+uaac token client get admin -s <<UAA_CLIENT_SECRET>> //PAS tile -> Credentials -> UAA -> Admin Client Credentials
 uaac client add firehose_exporter \
   --name firehose_exporter \
   --secret prometheus-client-secret \
@@ -66,9 +66,9 @@ uaac client add cf_exporter \
   --authorities cloud_controller.admin
 
 uaac target https://BOSH_DIRECTOR:8443 --skip-ssl-validation
-uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> #
+uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> //
 User name:  admin
-Password:  <<UAA-ADMIN-USER-CREDENTIAL>> #
+Password:  <<UAA-ADMIN-USER-CREDENTIAL>> //
   uaac client add prometheus-bosh \
   --name prometheus-bosh \
   --secret prometheus-client-secret \
