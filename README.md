@@ -50,7 +50,7 @@ $ bosh2 -e gcpbosh upload-stemcel
 ```
 
 ## Generating UAA Clients for Exporters
-According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual. <<UAA_CLIENT_SECRET>> is on `PAS tile -> Credentials -> UAA -> Admin Client Credentials.`. <<UAA-LOGIN-CLIENT-CREDENTIAL>> is on `BOSH tile -> Uaa Admin User Credentials`. <<UAA-ADMIN-USER-CREDENTIAL>> is on `BOSH tile -> Uaa Login Client Credentials`.
+According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual. <<UAA_CLIENT_SECRET>> is on `PAS tile -> Credentials -> UAA -> Admin Client Credentials.`. <<UAA_LOGIN_CLIENT_CREDENTIAL>> is on `BOSH tile -> Uaa Admin User Credentials`. <<UAA_ADMIN_USER_CREDENTIAL>> is on `BOSH tile -> Uaa Login Client Credentials`.
 ```bash
 $ uaac target https://uaa.<<SYSTEM_DOMAIN>> --skip-ssl-validation
 $ uaac token client get admin -s <<UAA_CLIENT_SECRET>>
@@ -68,9 +68,9 @@ $ uaac client add cf_exporter \
   --authorities cloud_controller.admin
 
 $ uaac target https://BOSH_DIRECTOR:8443 --skip-ssl-validation
-$ uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> 
+$ uaac token owner get login -s <<UAA_LOGIN_CLIENT_CREDENTIAL>> 
 User name:  admin
-Password:  <<UAA-ADMIN-USER-CREDENTIAL>>
+Password:  <<UAA_ADMIN_USER_CREDENTIAL>>
   uaac client add prometheus-bosh \
   --name prometheus-bosh \
   --secret prometheus-client-secret \
