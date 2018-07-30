@@ -50,7 +50,8 @@ $ bosh2 -e gcpbosh upload-stemcel
 ```
 
 ## Generating UAA Clients for Exporters
-According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual. `<<UAA_CLIENT_SECRET>>` is on `PAS tile -> Credentials -> UAA -> Admin Client Credentials.`. `<<UAA_LOGIN_CLIENT_CREDENTIAL>>` is on `BOSH tile -> Uaa Admin User Credentials`. `<<UAA_ADMIN_USER_CREDENTIAL>>` is on `BOSH tile -> Uaa Login Client Credentials`.
+According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual. 
+`<<UAA_CLIENT_SECRET>>` is on `PAS tile -> Credentials -> UAA -> Admin Client Credentials`. `<<UAA_LOGIN_CLIENT_CREDENTIAL>>` is on `BOSH tile -> Uaa Admin User Credentials`. `<<UAA_ADMIN_USER_CREDENTIAL>>` is on `BOSH tile -> Uaa Login Client Credentials`.
 ```bash
 $ uaac target https://uaa.<<SYSTEM_DOMAIN>> --skip-ssl-validation
 $ uaac token client get admin -s <<UAA_CLIENT_SECRET>>
@@ -84,7 +85,7 @@ $ uaac client add prometheus-bosh \
 See below.
 https://github.com/bosh-prometheus/node-exporter-boshrelease
 
-Preparations have been done! It's time to install Prometheus! <<Uaa Admin User Credentials>> is on `BOSH tile -> Uaa Admin User Credentials`. 
+Preparations have been done! It's time to install Prometheus! `<<UAA_ADMIN_USER_CREDENTIAL>>` is on `BOSH tile -> Uaa Admin User Credentials`. 
 ## Deploying Prometheus
 ```bash
 $ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
@@ -94,13 +95,13 @@ $ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
   -o manifests/operators/monitor-node.yml \
   -o pcf-colocate-firehose_exporter.yml \
   -o pcf-local-exporter.yml \
-  -v bosh_url= <<PCF_BOSH_URL>> \
-  -v bosh_username= admin \
-  -v bosh_password=  <<UAA_ADMIN_USER_CREDENTIAL>> \ 
-  --var-file bosh_ca_cert= <<PATH_TO_OPSMAN_CERT>> \ 
+  -v bosh_url=<<PCF_BOSH_URL>> \
+  -v bosh_username=admin \
+  -v bosh_password= <<UAA_ADMIN_USER_CREDENTIAL>> \
+  --var-file bosh_ca_cert= <<PATH_TO_OPSMAN_CERT>> \
   -v metrics_environment=p-bosh \
   -v metron_deployment_name=cf \
-  -v system_domain= <<SYSTEM_DOMAIN>>\
+  -v system_domain=<<SYSTEM_DOMAIN>>\
   -v uaa_bosh_exporter_client_secret=prometheus-client-secret \
   -v uaa_clients_cf_exporter_secret=prometheus-client-secret \
   -v uaa_clients_firehose_exporter_secret=prometheus-client-secret \
