@@ -26,7 +26,7 @@ Logging into BOSH ENV. `cred.yml` should be stored the directory which is set as
 $ bosh2 alias-env gcpbosh -e 10.0.0.6 --ca-cert <(bosh2 int /home/tkaburagi/creds.yml --path /director_ssl/ca)
 $ export BOSH_CLIENT=admin
 $ export BOSH_CLIENT_SECRET=`bosh2 int /home/tkaburagi/creds.yml --path /admin_password`
-$ bosh2 -e bosh env
+$ bosh2 -e gcpbosh env
 Using environment '10.0.0.6' as client 'admin'
 
 Name      d-bosh
@@ -45,8 +45,8 @@ Succeeded
 ## Updating Cloud Config
 Let's update Cloud Config Sample one is [here](https://github.com/tkaburagi/outside-pcfbosh-prometheus-bosh/blob/master/cloud-config.yml).
 ```bash
-$ bosh2 -e bosh-1 update-cloud-config
-$ bosh2 -e bosh-1 upload-stemcel
+$ bosh2 -e gcpbosh update-cloud-config
+$ bosh2 -e gcpbosh upload-stemcel
 ```
 
 ## Generating UAA Clients for Exporters
@@ -84,7 +84,7 @@ https://github.com/bosh-prometheus/node-exporter-boshrelease
 Preparations have been done! It's time to install Prometheus!
 ## Deploying Prometheus
 ```bash
-$ bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
+$ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
   --vars-store tmp/deployment-vars.yml \
   -o manifests/operators/monitor-bosh.yml \
   -o manifests/operators/monitor-cf.yml \
