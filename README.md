@@ -21,7 +21,7 @@ bosh2 create-env bosh-deployment/bosh.yml \
     -v subnetwork=<<GCP_VPC_SUBNET>>
 ```
 
-Logging into BOSH ENV. `cred.yml` should be stored the directory which is set as `--vars-store`.
+Logging into BOSH ENV. `cred.yml` should be stored the directory which is set as `--vars-store` above.
 ```console
 bosh2 alias-env gcpbosh -e 10.0.0.6 --ca-cert <(bosh2 int /home/tkaburagi/creds.yml --path /director_ssl/ca)
 export BOSH_CLIENT=admin
@@ -42,23 +42,43 @@ User      admin
 Succeeded
 ```
 
-
 ## Updating Cloud Config
+Let's update Cloud Config Sample one is [here](https://github.com/tkaburagi/outside-pcfbosh-prometheus-bosh/blob/master/cloud-config.yml).
 ```console
 bosh2 -e bosh-1 update-cloud-config
 bosh2 -e bosh-1 upload-stemcel
 ```
 
 ## Generating UAA Clients for Exporters
+According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual.
 ```console
-uaac target
-uaac token client
-uaac client add firehose_exporter
-uaac client add cf_exporter
-uaac target
-uaac token client
-uaac client add bosh_exporter
+uaac target https://uaa.<<SYSTEM_DOMAIN>> --skip-ssl-validation
+uaac token client get admin -s <<UAA_CLIENT_SECRET>> #PAS tile -> Credentials -> UAA -> Admin Client Credentials
+uaac client add firehose_exporter \
+  --name firehose_exporter \
+  --secret prometheus-client-secret \
+  --authorized_grant_types client_credentials,refresh_token \
+  --authorities doppler.firehose
+uaac client add cf_exporter \
+  --name cf_exporter  \
+  --secret prometheus-client-secret \
+  --authorized_grant_types client_credentials,refresh_token \
+  --authorities cloud_controller.admin
+
+uaac target https://BOSH_DIRECTOR:8443 --skip-ssl-validation
+uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> #
+User name:  admin
+Password:  <<UAA-ADMIN-USER-CREDENTIAL>> #
+  uaac client add prometheus-bosh \
+  --name prometheus-bosh \
+  --secret prometheus-client-secret \
+  --authorized_grant_types client_credentials,refresh_token \
+  --authorities bosh.read \
+  --scope bosh.read
 ```
+
+## Installing node_exporter. 
+See below.
 https://github.com/bosh-prometheus/node-exporter-boshrelease
 
 ## Deploying Prometheus
