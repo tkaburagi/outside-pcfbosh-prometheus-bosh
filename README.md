@@ -97,8 +97,8 @@ $ bosh2 -e gcpbosh -d prometheus deploy manifests/prometheus.yml \
   -o pcf-local-exporter.yml \
   -v bosh_url=<<PCF_BOSH_URL>> \
   -v bosh_username=admin \
-  -v bosh_password= <<UAA_ADMIN_USER_CREDENTIAL>> \
-  --var-file bosh_ca_cert= <<PATH_TO_OPSMAN_CERT>> \
+  -v bosh_password=<<UAA_ADMIN_USER_CREDENTIAL>> \
+  --var-file bosh_ca_cert=<<PATH_TO_OPSMAN_CERT>> \
   -v metrics_environment=p-bosh \
   -v metron_deployment_name=cf \
   -v system_domain=<<SYSTEM_DOMAIN>>\
