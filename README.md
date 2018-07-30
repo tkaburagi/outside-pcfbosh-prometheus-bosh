@@ -4,7 +4,7 @@ Sample Enviroment. This doc is for deloying prometheus-boshrelease to monitor PC
 
 ## Creating BOSH ENV on GCP
 Following [instruction](https://bosh.io/docs/init-google/).
-```console
+```bash
 $ bosh2 create-env bosh-deployment/bosh.yml \
     --state=state.json \
     --vars-store=creds.yml \
@@ -22,7 +22,7 @@ $ bosh2 create-env bosh-deployment/bosh.yml \
 ```
 
 Logging into BOSH ENV. `cred.yml` should be stored the directory which is set as `--vars-store` above.
-```console
+```bash
 $ bosh2 alias-env gcpbosh -e 10.0.0.6 --ca-cert <(bosh2 int /home/tkaburagi/creds.yml --path /director_ssl/ca)
 $ export BOSH_CLIENT=admin
 $ export BOSH_CLIENT_SECRET=`bosh2 int /home/tkaburagi/creds.yml --path /admin_password`
@@ -44,16 +44,16 @@ Succeeded
 
 ## Updating Cloud Config
 Let's update Cloud Config Sample one is [here](https://github.com/tkaburagi/outside-pcfbosh-prometheus-bosh/blob/master/cloud-config.yml).
-```console
+```bash
 $ bosh2 -e bosh-1 update-cloud-config
 $ bosh2 -e bosh-1 upload-stemcel
 ```
 
 ## Generating UAA Clients for Exporters
 According to an official [document](https://github.com/bosh-prometheus/prometheus-boshrelease#monitoring-cloud-foundry), you should apply `add-prometheus-uaa-clients.yml` op file but for PCF, this will be refreshed by `Apply Changes` on Ops Manager, so you need to add clients by manual.
-```console
+```bash
 $ uaac target https://uaa.<<SYSTEM_DOMAIN>> --skip-ssl-validation
-$ uaac token client get admin -s <<UAA_CLIENT_SECRET>> //PAS tile -> Credentials -> UAA -> Admin Client Credentials
+$ uaac token client get admin -s <<UAA_CLIENT_SECRET>> #PAS tile -> Credentials -> UAA -> Admin Client Credentials
 $ uaac client add firehose_exporter \
   --name firehose_exporter \
   --secret prometheus-client-secret \
@@ -66,7 +66,7 @@ $ uaac client add cf_exporter \
   --authorities cloud_controller.admin
 
 $ uaac target https://BOSH_DIRECTOR:8443 --skip-ssl-validation
-$ uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> //BOSH tile -> Uaa Admin User Credentials
+$ uaac token owner get login -s <<UAA-LOGIN-CLIENT-CREDENTIAL>> #BOSH tile -> Uaa Admin User Credentials
 User name:  admin
 Password:  <<UAA-ADMIN-USER-CREDENTIAL>> //BOSH tile -> Uaa Login Client Credentials
   uaac client add prometheus-bosh \
@@ -83,7 +83,7 @@ https://github.com/bosh-prometheus/node-exporter-boshrelease
 
 Preparations have been done! It's time to install Prometheus!
 ## Deploying Prometheus
-```console
+```bash
 $ bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
   --vars-store tmp/deployment-vars.yml \
   -o manifests/operators/monitor-bosh.yml \
@@ -94,7 +94,7 @@ $ bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
   -v bosh_url= <<PCF_BOSH_URL>> \
   -v bosh_username= admin \
   -v bosh_password=  <<Uaa Admin User Credentials>> \
-  --var-file bosh_ca_cert= <<UAA-LOGIN-CLIENT-CREDENTIAL>> \ //BOSH tile -> Uaa Admin User Credentials
+  --var-file bosh_ca_cert= <<UAA-LOGIN-CLIENT-CREDENTIAL>> \ #BOSH tile -> Uaa Admin User Credentials
   -v metrics_environment=p-bosh \
   -v metron_deployment_name=cf \
   -v system_domain= <<SYSTEM_DOMAIN>>\
@@ -107,5 +107,7 @@ $ bosh2 -e bosh -d prometheus deploy manifests/prometheus.yml \
 
 ## Login to Grafana
 URL: `http://NGINX_PUBLIC_IP:3000`
+
 USER: `admin`
+
 PASSWORD: Retrive from `tmp/deployment-vars.yml`
