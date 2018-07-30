@@ -82,7 +82,7 @@ $ uaac client add prometheus-bosh \
 ```
 
 ## Installing node_exporter. 
-See below.
+See below and execute on PCF Ops Manager VM.
 https://github.com/bosh-prometheus/node-exporter-boshrelease
 
 ## Deploying Prometheus
