@@ -15,7 +15,7 @@ $ bosh2 create-env bosh-deployment/bosh.yml \
     -v internal_ip=10.0.0.6 \
     --var-file gcp_credentials_json=<KEY_JSON> \
     -v project_id=<GCP_PROJECT_ID> \
-    -v zone=<<ONE> \
+    -v zone=<ZONE> \
     -v tags=[d-bosh] \
     -v network=<GCP_VPC> \
     -v subnetwork=<GCP_VPC_SUBNET>
